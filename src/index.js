@@ -121,7 +121,7 @@ const makePurchase = (objectId) => {
     // going to be a low mint number. First we check the length of the swaps array
     // then we check the swapsAvail (swap.objkt_amount) which will be greater than
     // 1 in the case of new swaps.
-    console.log('SWAPS AVAIL', data.swaps.length, swapsAvail)
+    console.log('SWAPS AVAIL', data.swaps.length, swapsAvail, swapAmount)
     if (data.swaps.length > 26) return
     if (swapsAvail > 26) return
     // Don't collect if price isn't 25 XTZ or below
