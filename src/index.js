@@ -2,6 +2,8 @@ import { BeaconWallet } from '@taquito/beacon-wallet'
 import { TezosToolkit } from '@taquito/taquito'
 import { InMemorySigner } from '@taquito/signer'
 import axios from 'axios'
+import dotenv from 'dotenv'
+dotenv.config()
 
 // See here for docs: https://tezostaquito.io/docs/quick_start
 // 
@@ -10,7 +12,7 @@ const Tezos = new TezosToolkit('https://mainnet-tezos.giganode.io')
 
 // TODO: Use the faucet funds/keys to test
 Tezos.setProvider({
-  signer: new InMemorySigner('edskRgHVF6StamzrmazsAHA9VZZb6jBwBu2jF9oegPbebYwGXDocQTdcqpcQK2PxuT3xmv17tddte9JGZni45jSUHRJarKNrXy'),
+  signer: new InMemorySigner(process.env.WALLET_KEY),
   config: { confirmationPollingIntervalSecond: 1 }
 })
 
