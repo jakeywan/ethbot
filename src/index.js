@@ -105,13 +105,13 @@ const makePurchase = (objectId) => {
   console.log('PURCHASE', objectId)
   GetOBJKT(objectId).then(data => {
     let swapId = null
-    let swapAmount = null
+    let swapAmount = 9999999999999999999999
     let swapsAvail = null
     // Find the cheapest swap, in case they have diff pricing
     data.swaps.forEach(swap => {
       const id = swap.swap_id
       const amount = swap.xtz_per_objkt
-      if (swapAmount < amount) {
+      if (parseFloat(swapAmount) > parseFloat(amount)) {
         swapId = id
         swapAmount = amount
         swapsAvail = swap.objkt_amount
