@@ -1,3 +1,5 @@
+import express from 'express'
+import http from 'http'
 import { BeaconWallet } from '@taquito/beacon-wallet'
 import { TezosToolkit } from '@taquito/taquito'
 import { InMemorySigner } from '@taquito/signer'
@@ -5,8 +7,26 @@ import axios from 'axios'
 import dotenv from 'dotenv'
 dotenv.config()
 
+const server = express()
+
+let port = ''
+let host = ''
+if (process.env.NODE_ENV === 'production') {
+  // IMPORTANT: In production, the port must be inferred from env variables,
+  // because Heroku sets them dynamically
+  port = process.env.PORT || 1337
+  host = '0.0.0.0'
+} else if (process.env.NODE_ENV === 'development') {
+  // Running development server at localhost:1337
+  port = 1337 // Will be accessed via localhost
+  host = 'localhost'
+}
+
+http.createServer(server).listen(port, host)
+
+console.log('Server running at:', host + port)
+
 // See here for docs: https://tezostaquito.io/docs/quick_start
-// 
 // https://mainnet.smartpy.io
 const Tezos = new TezosToolkit('https://mainnet-tezos.giganode.io')
 
