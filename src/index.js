@@ -125,7 +125,7 @@ const makePurchase = (objectId) => {
     if (data.swaps.length > 26) return
     if (swapsAvail > 26) return
     // Don't collect if price isn't 25 XTZ or below
-    if (swapAmount > (25 * 1000000)) return
+    if (swapAmount > (26 * 1000000)) return
     // This is the cheapest swap, now execute
     collect(swapId, swapAmount)
   })
