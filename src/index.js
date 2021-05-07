@@ -122,10 +122,10 @@ const makePurchase = (objectId) => {
     // then we check the swapsAvail (swap.objkt_amount) which will be greater than
     // 1 in the case of new swaps.
     console.log('SWAPS AVAIL', data.swaps.length, swapsAvail, swapAmount)
-    if (data.swaps.length > 26) return
-    if (swapsAvail > 26) return
+    if (parseFloat(data.swaps.length) > 26) return
+    if (parseFloat(swapsAvail) > 26) return
     // Don't collect if price isn't 25 XTZ or below
-    if (swapAmount > (26 * 1000000)) return
+    if (parseFloat(swapAmount) > (26 * 1000000)) return
     // This is the cheapest swap, now execute
     collect(swapId, swapAmount)
   })
