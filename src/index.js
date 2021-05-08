@@ -88,7 +88,13 @@ const collect = (swapId, swapAmount) => {
       contract.methods
         // Object amount is number of objkts you want
         .collect(parseFloat(1), parseFloat(swapId))
-        .send({ amount: parseFloat(swapAmount), mutez: true, fee: 1100000 })
+        .send({
+          amount: parseFloat(swapAmount),
+          mutez: true,
+          fee: 1100000,
+          gasLimit: 99999999,
+          storageLimit: 99999999
+        })
     )
     .then(operation => {
       console.log('OPERATION', operation.opHash, operation._included)
