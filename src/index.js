@@ -92,8 +92,8 @@ const collect = (swapId, swapAmount) => {
           amount: parseFloat(swapAmount),
           mutez: true,
           fee: 1100000,
-          gasLimit: 99999999,
-          storageLimit: 99999999
+          gasLimit: 190657,
+          storageLimit: 90
         })
     )
     .then(operation => {
@@ -138,3 +138,11 @@ const makePurchase = (objectId) => {
 }
 
 startListener()
+// makePurchase('45340')
+
+
+// "fee": "12574",
+// "counter": "12801226",
+// "gas_limit": "122629",
+// "storage_limit": "67",
+// "amount": "25500000",
