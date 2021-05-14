@@ -50,7 +50,7 @@ const startListener = () => {
     // Only proceed on swaps
     if (methodType !== 'swap') return
     console.log('SWAP', tezAddress)
-    // Only proceed if it's an artist we're looking for
+    // Only proceed if the artist the we're looking for is swapping
     const isJohn = tezAddress === 'tz1gqaKjfQBhUMCE6LhbkpuittRiWv5Z6w38'
     const isXCopy = tezAddress === 'tz1R8kQK1CR59su3GYpPBFHxrBokNPYWaM42'
     const isFiedler = tezAddress === 'tz1XuPRJJEdEumLcuJc4pdzejqs58qBFJSCW'
@@ -71,7 +71,19 @@ const GetOBJKT = (id) => {
     axios
       .get(`https://51rknuvw76.execute-api.us-east-1.amazonaws.com/dev/objkt?id=${id}`)
       .then((res) => {
-        resolve(res.data.result)
+        const creator = res.data.result.token_info.creators[0]
+        // NOW make sure the creator of this token is one of our artists. If not,
+        // reject. We need this step because all we've checked so far is that the
+        // artist did the swapping, not necessarily the making.
+        const isJohn = creator === 'tz1gqaKjfQBhUMCE6LhbkpuittRiWv5Z6w38'
+        const isXCopy = creator === 'tz1R8kQK1CR59su3GYpPBFHxrBokNPYWaM42'
+        const isFiedler = creator === 'tz1XuPRJJEdEumLcuJc4pdzejqs58qBFJSCW'
+        const isSarah = creator === 'tz1ZRWhMYGxFfXnXc74bS2L991q6G5nEs6nf'
+        if (isJohn || isXCopy || isFiedler || isSarah) {
+          resolve(res.data.result)
+        } else {
+          console.log('NOT THE CREATOR WE WANTED')
+        }
       })
       .catch((e) => reject(e)) // TODO: send error message to context. have an error component to display the error
   })
@@ -134,10 +146,13 @@ const makePurchase = (objectId) => {
     if (parseFloat(swapAmount) > (40 * 1000000)) return
     // This is the cheapest swap, now execute
     collect(swapId, swapAmount)
+  }).catch(e => {
+    console.log('ERROR GETTING OBJKT', e)
   })
 }
 
 startListener()
+// GetOBJKT('45340')
 // makePurchase('45340')
 
 
