@@ -55,8 +55,9 @@ const startListener = () => {
     const isXCopy = tezAddress === 'tz1R8kQK1CR59su3GYpPBFHxrBokNPYWaM42'
     const isFiedler = tezAddress === 'tz1XuPRJJEdEumLcuJc4pdzejqs58qBFJSCW'
     const isSarah = tezAddress === 'tz1ZRWhMYGxFfXnXc74bS2L991q6G5nEs6nf'
+    const isSamBurton = tezAddress === 'tz1duZMsESvhr88Xa4fYzC2WLCXGRJnxhwDd'
     const objectId = data.parameters.value.args[1].args[0].int
-    if (isJohn || isXCopy || isFiedler || isSarah) {
+    if (isJohn || isXCopy || isFiedler || isSarah || isSamBurton) {
       // TODO: This is where we call GetOBJKT with our id, then iterate through
       // the swaps to call collect on one
       console.log('TRIGGER', objectId, tezAddress, data)
@@ -79,7 +80,8 @@ const GetOBJKT = (id) => {
         const isXCopy = creator === 'tz1R8kQK1CR59su3GYpPBFHxrBokNPYWaM42'
         const isFiedler = creator === 'tz1XuPRJJEdEumLcuJc4pdzejqs58qBFJSCW'
         const isSarah = creator === 'tz1ZRWhMYGxFfXnXc74bS2L991q6G5nEs6nf'
-        if (isJohn || isXCopy || isFiedler || isSarah) {
+        const isSamBurton = tezAddress === 'tz1duZMsESvhr88Xa4fYzC2WLCXGRJnxhwDd'
+        if (isJohn || isXCopy || isFiedler || isSarah || isSamBurton) {
           resolve(res.data.result)
         } else {
           console.log('NOT THE CREATOR WE WANTED')
