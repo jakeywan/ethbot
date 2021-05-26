@@ -80,7 +80,7 @@ const GetOBJKT = (id) => {
         const isXCopy = creator === 'tz1R8kQK1CR59su3GYpPBFHxrBokNPYWaM42'
         const isFiedler = creator === 'tz1XuPRJJEdEumLcuJc4pdzejqs58qBFJSCW'
         const isSarah = creator === 'tz1ZRWhMYGxFfXnXc74bS2L991q6G5nEs6nf'
-        const isSamBurton = tezAddress === 'tz1duZMsESvhr88Xa4fYzC2WLCXGRJnxhwDd'
+        const isSamBurton = creator === 'tz1duZMsESvhr88Xa4fYzC2WLCXGRJnxhwDd'
         if (isJohn || isXCopy || isFiedler || isSarah || isSamBurton) {
           resolve(res.data.result)
         } else {
