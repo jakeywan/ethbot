@@ -1,5 +1,6 @@
 // NOTE: comes from here:
 // https://raw.githubusercontent.com/pedrobergamini/uni-sushi-flashloaner/master/index.js
+// https://blog.infura.io/build-a-flash-loan-arbitrage-bot-on-infura-part-ii/?&utm_source=infurablog&utm_medium=referral&utm_campaign=Tutorials&utm_content=flashbot1
 
 // make sure to test your own strategies, do not use this version in production
 require('dotenv').config();

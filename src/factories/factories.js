@@ -19,3 +19,8 @@ export const polyzapFactory = new ethers.Contract(
   '0x34De5ce6c9a395dB5710119419A7a29baa435C88',
   UniswapV2Factory.abi, wallet
 )
+
+export const dfynFactory = new ethers.Contract(
+  '0xE7Fb3e833eFE5F9c441105EB65Ef8b261266423B',
+  UniswapV2Factory.abi, wallet
+)
