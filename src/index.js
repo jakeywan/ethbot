@@ -3,11 +3,17 @@ import http from 'http'
 import axios from 'axios'
 import dotenv from 'dotenv'
 dotenv.config()
-import { runBot } from './ethers.js'
 import {
   wethAddress,
   usdcAddress
 } from './constants/tokenAddresses.js'
+import { ethUSDCBot } from './bots/ethUSDCBot.js'
+import { ethDaiBot } from './bots/ethDaiBot.js'
+import { maticBtcBot } from './bots/maticBtcBot.js'
+import { loader } from './utilities/loader.js'
+import { ethMaticBot } from './bots/ethMaticBot.js'
+import { maticAaveBot } from './bots/maticAaveBot.js'
+import { maticUSDCBot } from './bots/maticUSDCBot.js'
 
 const server = express()
 
@@ -29,4 +35,10 @@ http.createServer(server).listen(port, host)
 console.log('Server running at:', host + port)
 
 // RUN BOT
-runBot(wethAddress, 18, usdcAddress, 6)
+ethUSDCBot()
+ethDaiBot()
+maticBtcBot()
+ethMaticBot()
+maticAaveBot()
+maticUSDCBot()
+loader()
