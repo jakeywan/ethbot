@@ -1,17 +1,26 @@
 import { ethers } from 'ethers'
 import dotenv from 'dotenv'
 dotenv.config()
+import {
+  wethAddress,
+  usdcAddress
+} from './constants/tokenAddresses.js'
+import {
+  provider,
+  wallet
+} from './matic/matic.js'
+import {
+  sushiFactory,
+  quickSwapFactory,
+  polyzapFactory
+} from './factories/factories.js'
 
-// Matic network urls: https://docs.matic.network/docs/develop/network-details/network/
-const provider = new ethers.providers.JsonRpcProvider('https://rpc-mainnet.maticvigil.com')
-// This key is for demo wallet address: 0xc6ab04C59A14cD50c5d0BDA790dCeFD2484901cE
-const wallet = new ethers.Wallet(process.env.WALLET_KEY, provider)
 // Our wallet address. Dev account right now.
 const flashLoanerAddress = '0xc6ab04C59A14cD50c5d0BDA790dCeFD2484901cE'
 
-// uni/sushiswap ABIs are the same
-import UniswapV2Pair from './IUniswapV2Pair.js'
-import UniswapV2Factory from './IUniswapV2Factory.js'
+// All of our contracts are likely clones of uniswap, so ABIs are the same
+import UniswapV2Pair from './abis/IUniswapV2Pair.js'
+import UniswapV2Factory from './abis/IUniswapV2Factory.js'
 
 // Hardcode the number of each token we'd trade if we were to do so? I think?
 const ETH_TRADE = 10
@@ -19,24 +28,9 @@ const USDC_TRADE = 3500
 
 export const runBot = async () => {
 
-  // List of contract addresses for sushi: https://dev.sushi.com/sushiswap/contracts
-  // Make sure you pick the "alternative network" address for Matic
-  const sushiFactory = new ethers.Contract(
-    '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-    UniswapV2Factory.abi, wallet
-  )
-  const quickSwapFactory = new ethers.Contract(
-    '0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32',
-    UniswapV2Factory.abi, wallet
-  )
-
-  // Address of WETH on Matic
-  const wethAddress = '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'
-  // Address of USDC on Matic
-  const usdcAddress = '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
-
   let sushiEthUSDC
   let quickSwapEthUSDC
+  let polyzapEthUSDC
 
   const loadPairs = async () => {
     // This returns a method. Test it here: https://explorer-mainnet.maticvigil.com/address/0xc35DADB65012eC5796536bD9864eD8773aBc74C4/read-contract
@@ -46,6 +40,10 @@ export const runBot = async () => {
     )
     quickSwapEthUSDC = new ethers.Contract(
       await quickSwapFactory.getPair(wethAddress, usdcAddress),
+      UniswapV2Pair.abi, wallet
+    )
+    polyzapEthUSDC = new ethers.Contract(
+      await polyzapFactory.getPair(wethAddress, usdcAddress),
       UniswapV2Pair.abi, wallet
     )
   }
@@ -78,11 +76,17 @@ export const runBot = async () => {
      * Quickswap prices
      */
     const quickSwapReserves = await quickSwapEthUSDC.getReserves()
-    // Amount of USDC in the pool
     const reserve0QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[0], 6))
-    // Amount of WETH in the pool
     const reserve1QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[1], 18))
     const priceQuickSwap = reserve0QuickSwap / reserve1QuickSwap
+
+    /**
+     * Polyzap prices
+     */
+    const polyzapReserves = await polyzapEthUSDC.getReserves()
+    const reserve0Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[0], 6))
+    const reserve1Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[1], 18))
+    const pricePolyzap = reserve0Polyzap / reserve1Polyzap
     
     /**
      * Determine if we should trade
@@ -113,6 +117,7 @@ export const runBot = async () => {
     console.log('--------------')
     console.log(`QUICKSWAP PRICE OF ETH (USDC) > ${priceQuickSwap}`)
     console.log(`SUSHISWAP PRICE OF ETH (USDC) > ${priceSushiswap}`)
+    console.log(`POLYZAP PRICE OF ETH (USDC) > ${pricePolyzap}`)
     console.log(`PERCENTAGE SPREAD > ${percentageSpread}%`)
     console.log(`PERCENTAGE SPREAD AFTER FEES > ${percentageSpreadAfterFees}`)
     console.log(`PROFITABLE? > ${shouldTrade}`)
