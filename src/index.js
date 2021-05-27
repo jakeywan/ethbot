@@ -4,6 +4,10 @@ import axios from 'axios'
 import dotenv from 'dotenv'
 dotenv.config()
 import { runBot } from './ethers.js'
+import {
+  wethAddress,
+  usdcAddress
+} from './constants/tokenAddresses.js'
 
 const server = express()
 
@@ -25,4 +29,4 @@ http.createServer(server).listen(port, host)
 console.log('Server running at:', host + port)
 
 // RUN BOT
-runBot()
+runBot(wethAddress, 18, usdcAddress, 6)

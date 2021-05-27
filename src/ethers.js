@@ -18,7 +18,7 @@ import {
 import { ETH_TRADE } from './constants/tradeAmountDefaults.js'
 import { loadPair } from './pairs/pairs.js'
 
-export const runBot = async () => {
+export const runBot = async (tokenA, tokenADecimals, tokenB, tokenBDecimals) => {
 
   let sushiEthUSDC
   let quickSwapEthUSDC
@@ -26,10 +26,10 @@ export const runBot = async () => {
   let dfynEthUSDC
 
   const loadPairs = async () => {
-    sushiEthUSDC = await loadPair(wethAddress, usdcAddress, 'SUSHI')
-    quickSwapEthUSDC = await loadPair(wethAddress, usdcAddress, 'QUICKSWAP')
-    polyzapEthUSDC = await loadPair(wethAddress, usdcAddress, 'POLYZAP')
-    dfynEthUSDC = await loadPair(wethAddress, usdcAddress, 'DFYN')
+    sushiEthUSDC = await loadPair(tokenA, tokenB, 'SUSHI')
+    quickSwapEthUSDC = await loadPair(tokenA, tokenB, 'QUICKSWAP')
+    polyzapEthUSDC = await loadPair(tokenA, tokenB, 'POLYZAP')
+    dfynEthUSDC = await loadPair(tokenA, tokenB, 'DFYN')
   }
 
   await loadPairs()
@@ -48,9 +48,9 @@ export const runBot = async () => {
     // NOTE: Make sure the "decimals" in `formatUnits` is correct (check the
     // token contract). For USDC it's fucking 6, so stupid.
     // Amount of USDC in the pool
-    const reserve0Sushi = Number(ethers.utils.formatUnits(sushiReserves[0], 6))
+    const reserve0Sushi = Number(ethers.utils.formatUnits(sushiReserves[0], tokenBDecimals))
     // Amount of WETH in the pool
-    const reserve1Sushi = Number(ethers.utils.formatUnits(sushiReserves[1], 18))
+    const reserve1Sushi = Number(ethers.utils.formatUnits(sushiReserves[1], tokenADecimals))
     // Dividing them tells you how much of one you need to purchase 1 of the other,
     // in other words its relative price. This gives us the price of ETH, in USDC,
     // on SushiSwap.
@@ -60,24 +60,24 @@ export const runBot = async () => {
      * Quickswap prices
      */
     const quickSwapReserves = await quickSwapEthUSDC.getReserves()
-    const reserve0QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[0], 6))
-    const reserve1QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[1], 18))
+    const reserve0QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[0], tokenBDecimals))
+    const reserve1QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[1], tokenADecimals))
     const priceQuickSwap = reserve0QuickSwap / reserve1QuickSwap
 
     /**
      * Polyzap prices
      */
     const polyzapReserves = await polyzapEthUSDC.getReserves()
-    const reserve0Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[0], 6))
-    const reserve1Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[1], 18))
+    const reserve0Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[0], tokenBDecimals))
+    const reserve1Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[1], tokenADecimals))
     const pricePolyzap = reserve0Polyzap / reserve1Polyzap
 
     /**
      * Dfyn prices
      */
     const dfynReserves = await dfynEthUSDC.getReserves()
-    const reserve0Dfyn = Number(ethers.utils.formatUnits(dfynReserves[0], 6))
-    const reserve1Dfyn = Number(ethers.utils.formatUnits(dfynReserves[1], 18))
+    const reserve0Dfyn = Number(ethers.utils.formatUnits(dfynReserves[0], tokenBDecimals))
+    const reserve1Dfyn = Number(ethers.utils.formatUnits(dfynReserves[1], tokenADecimals))
     const priceDfyn = reserve0Dfyn / reserve1Dfyn
 
     /**
@@ -126,10 +126,11 @@ export const runBot = async () => {
     const shouldTrade = percentageSpreadAfterFees > 0
 
     console.log('--------------')
-    console.log('QUICKSWAP PRICE OF ETH (USDC) =>', parseFloat(priceQuickSwap.toFixed(3)))
-    console.log('SUSHISWAP PRICE OF ETH (USDC) =>', parseFloat(priceSushiswap.toFixed(3)))
-    console.log('POLYZAP PRICE OF ETH (USDC)   =>', parseFloat(pricePolyzap.toFixed(3)))
-    console.log('DFYN PRICE OF ETH (USDC)      =>', parseFloat(priceDfyn.toFixed(3)))
+    console.log('TOKEN PAIR                    =>', tokenA, tokenB)
+    console.log('QUICKSWAP PRICE               =>', parseFloat(priceQuickSwap.toFixed(3)))
+    console.log('SUSHISWAP PRICE               =>', parseFloat(priceSushiswap.toFixed(3)))
+    console.log('POLYZAP PRICE                 =>', parseFloat(pricePolyzap.toFixed(3)))
+    console.log('DFYN PRICE                    =>', parseFloat(priceDfyn.toFixed(3)))
     console.log('LARGEST PERCENTAGE SPREAD     =>', percentageSpread.toFixed(3) + ' %')
     console.log('LARGEST SPREAD AFTER FEES     =>', percentageSpreadAfterFees.toFixed(3) + ' %')
     console.log('PROFITABLE?                   =>', shouldTrade)
