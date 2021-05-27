@@ -16,13 +16,7 @@ import {
   dfynFactory
 } from './factories/factories.js'
 import { ETH_TRADE } from './constants/tradeAmountDefaults.js'
-
-// Our wallet address. Dev account right now.
-const walletAddress = process.env.WALLET_ADDRESS
-
-// All of our contracts are likely clones of uniswap, so ABIs are the same
-import UniswapV2Pair from './abis/IUniswapV2Pair.js'
-import UniswapV2Factory from './abis/IUniswapV2Factory.js'
+import { loadPair } from './pairs/pairs.js'
 
 export const runBot = async () => {
 
@@ -32,23 +26,10 @@ export const runBot = async () => {
   let dfynEthUSDC
 
   const loadPairs = async () => {
-    // This returns a method. Test it here: https://explorer-mainnet.maticvigil.com/address/0xc35DADB65012eC5796536bD9864eD8773aBc74C4/read-contract
-    sushiEthUSDC = new ethers.Contract(
-      await sushiFactory.getPair(wethAddress, usdcAddress),
-      UniswapV2Pair.abi, wallet
-    )
-    quickSwapEthUSDC = new ethers.Contract(
-      await quickSwapFactory.getPair(wethAddress, usdcAddress),
-      UniswapV2Pair.abi, wallet
-    )
-    polyzapEthUSDC = new ethers.Contract(
-      await polyzapFactory.getPair(wethAddress, usdcAddress),
-      UniswapV2Pair.abi, wallet
-    )
-    dfynEthUSDC = new ethers.Contract(
-      await dfynFactory.getPair(wethAddress, usdcAddress),
-      UniswapV2Pair.abi, wallet
-    )
+    sushiEthUSDC = await loadPair(wethAddress, usdcAddress, 'SUSHI')
+    quickSwapEthUSDC = await loadPair(wethAddress, usdcAddress, 'QUICKSWAP')
+    polyzapEthUSDC = await loadPair(wethAddress, usdcAddress, 'POLYZAP')
+    dfynEthUSDC = await loadPair(wethAddress, usdcAddress, 'DFYN')
   }
 
   await loadPairs()
