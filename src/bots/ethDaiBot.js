@@ -33,14 +33,10 @@ export const ethDaiBot = async () => {
 
   let sushiEthUSDC
   let quickSwapEthUSDC
-  // let polyzapEthUSDC
-  let dfynEthUSDC
 
   const loadPairs = async () => {
     sushiEthUSDC = await loadPair(daiAddress, wethAddress, 'SUSHI')
     quickSwapEthUSDC = await loadPair(daiAddress, wethAddress, 'QUICKSWAP')
-    // polyzapEthUSDC = await loadPair(daiAddress, wethAddress, 'POLYZAP')
-    dfynEthUSDC = await loadPair(daiAddress, wethAddress, 'DFYN')
   }
 
   await loadPairs()
@@ -75,30 +71,12 @@ export const ethDaiBot = async () => {
     const priceQuickSwap = reserve1QuickSwap / reserve0QuickSwap
 
     /**
-     * Polyzap prices
-     */
-    // const polyzapReserves = await polyzapEthUSDC.getReserves()
-    // const reserve0Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[0], daiDecimals))
-    // const reserve1Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[1], wethDecimals))
-    // const pricePolyzap = reserve1Polyzap / reserve0Polyzap
-
-    /**
-     * Dfyn prices
-     */
-    const dfynReserves = await dfynEthUSDC.getReserves()
-    const reserve0Dfyn = Number(ethers.utils.formatUnits(dfynReserves[0], daiDecimals))
-    const reserve1Dfyn = Number(ethers.utils.formatUnits(dfynReserves[1], wethDecimals))
-    const priceDfyn = reserve1Dfyn / reserve0Dfyn
-
-    /**
      * Find the lowest and highest price for ETH among exchanges, as that will
      * be our best arb opportunity (if any)
      */
     const priceList = [
       priceSushiswap,
-      priceQuickSwap,
-      // pricePolyzap,
-      priceDfyn
+      priceQuickSwap
     ]
     let min = Math.min.apply(Math, priceList)
     let max = Math.max.apply(Math, priceList)
@@ -108,13 +86,9 @@ export const ethDaiBot = async () => {
     // Lowest
     if (priceList[0] === min) lowestPriceExchange = 'SUSHI'
     if (priceList[1] === min) lowestPriceExchange = 'QUICKSWAP'
-    // if (priceList[2] === min) lowestPriceExchange = 'POLYZAP'
-    if (priceList[3] === min) lowestPriceExchange = 'DFYN'
     // Highest
     if (priceList[0] === max) highestPriceExchange = 'SUSHI'
     if (priceList[1] === max) highestPriceExchange = 'QUICKSWAP'
-    // if (priceList[2] === max) highestPriceExchange = 'POLYZAP'
-    if (priceList[3] === max) highestPriceExchange = 'DFYN'
     
     /**
      * Determine if we should trade
@@ -137,8 +111,6 @@ export const ethDaiBot = async () => {
     console.log('--------------DAI-ETH --------------')
     console.log('QUICKSWAP PRICE               =>', parseFloat(priceQuickSwap.toFixed(3)))
     console.log('SUSHISWAP PRICE               =>', parseFloat(priceSushiswap.toFixed(3)))
-    // console.log('POLYZAP PRICE                 =>', parseFloat(pricePolyzap.toFixed(3)))
-    console.log('DFYN PRICE                    =>', parseFloat(priceDfyn.toFixed(3)))
     console.log('LARGEST PERCENTAGE SPREAD     =>', percentageSpread.toFixed(3) + ' %')
     console.log('LARGEST SPREAD AFTER FEES     =>', percentageSpreadAfterFees.toFixed(3) + ' %')
     console.log('PROFITABLE?                   =>', shouldTrade)

@@ -42,3 +42,19 @@ https://info.polyzap.finance/pair/0xcaf7834cab11e00123d3510abbbcb912b39ab456
 
 Quickswap:
 https://info.quickswap.exchange/pair/0x6e7a5fafcec6bb1e78bae2a1f0b612012bf14827
+
+------------------------------
+
+# ETH-DAI
+
+Quickswap:
+https://info.quickswap.exchange/pair/0x4a35582a710e1f4b2030a3f826da20bfb6703c09
+
+Dfyn (TOO SMALL):
+https://info.dfyn.network/pair/0xe69fe44b087eab9d0f1cbdcf63c1b266dcc556fe
+
+Sushi:
+https://analytics-polygon.sushi.com/pairs/0x6ff62bfb8c12109e8000935a6de54dad83a4f39f
+
+Polyzap (TOO SMALL):
+https://info.polyzap.finance/pair/0xe0a297059ecf946c38b78c6de71bcc00cc14953e
