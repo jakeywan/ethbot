@@ -58,3 +58,11 @@ https://analytics-polygon.sushi.com/pairs/0x6ff62bfb8c12109e8000935a6de54dad83a4
 
 Polyzap (TOO SMALL):
 https://info.polyzap.finance/pair/0xe0a297059ecf946c38b78c6de71bcc00cc14953e
+
+------------------------------------
+
+# Aave
+
+Docs: https://docs.aave.com/developers/the-core-protocol/lendingpool#flashloan
+
+Price oracle contract: 0x0229F777B0fAb107F9591a41d5F02E4e98dB6f2d

@@ -51,7 +51,10 @@ https://docs.dfyn.network/
 
 
 
+----------------------------
 
+Note: it looks like Aave offers a "Flash loan" that only costs .09%. This is quite
+a bit better than the .3% Uniswap offers.
 
 
 
@@ -78,3 +81,9 @@ I removed the gas calculations because I'm thinking it's just fractions of penni
       console.log('ERROR COMPUTING GAS', err.reason)
     }
 ```
+
+
+------------------------------------
+
+# Aave Flash Loans
+https://docs.aave.com/developers/guides/flash-loans
