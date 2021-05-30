@@ -26,8 +26,9 @@ export const dfynFactory = new ethers.Contract(
   UniswapV2Factory.abi, wallet
 )
 
+// this is our contract address
 export const tradeFactory = new ethers.Contract(
-  '0xCFf7b8db1b8232ac343B517aF890f2DEf4E541F7',
+  '0x4f0522cD0cc91c3B4eF30962Ce62790633306d82',
   EthBot, wallet
 )
 

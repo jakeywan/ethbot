@@ -44,34 +44,47 @@ export const bot = async (tokenA, tokenB) => {
       let pricePolyzap
       let priceDfyn
 
+      // We need to enforce a minimum liquidity value to attempt a trade. Since
+      // it's difficult to establish a universal minimum threshold, let's just
+      // say that one of the pairs in the pool must have more than 1,000 tokens
       // If a pair doesn't exist, it's address will be the null address
       if (sushiPair.address !== nullAddress) {
-        // SUSHI. Note that we'll always divide reserve0 / reserve1 to get price.
+        // SUSHI. Note that we'll always divide reserve1 / reserve0 to get price.
         const sushiReserves = await sushiPair.getReserves()
         const reserve0Sushi = Number(ethers.utils.formatUnits(sushiReserves[0], token0Decimals))
         const reserve1Sushi = Number(ethers.utils.formatUnits(sushiReserves[1], token1Decimals))
-        priceSushiswap = reserve1Sushi / reserve0Sushi
+        if (reserve0Sushi > 1000 || reserve1Sushi > 1000) {
+          // We must ALWAYS calculate price in this direction, so we can assume
+          // that reserve0/token0/amount0In is always the starting direction.
+          priceSushiswap = reserve1Sushi / reserve0Sushi
+        }
       }
       if (quickSwapPair.address !== nullAddress) {
         // QUICKSWAP
         const quickSwapReserves = await quickSwapPair.getReserves()
         const reserve0QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[0], token0Decimals))
         const reserve1QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[1], token1Decimals))
-        priceQuickSwap = reserve1QuickSwap / reserve0QuickSwap
+        if (reserve0QuickSwap > 1000 || reserve1QuickSwap > 1000) {
+          priceQuickSwap = reserve1QuickSwap / reserve0QuickSwap
+        }
       }
       if (quickSwapPair.address !== nullAddress) {
         // POLYZAP
         const polyzapReserves = await polyzapPair.getReserves()
         const reserve0Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[0], token0Decimals))
         const reserve1Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[1], token1Decimals))
-        pricePolyzap = reserve1Polyzap / reserve0Polyzap
+        if (reserve0Polyzap > 1000 || reserve1Polyzap > 1000) {
+          pricePolyzap = reserve1Polyzap / reserve0Polyzap
+        }
       }
       if (dfynPair.address !== nullAddress) {
         // DFYN
         const dfynReserves = await dfynPair.getReserves()
         const reserve0Dfyn = Number(ethers.utils.formatUnits(dfynReserves[0], token0Decimals))
         const reserve1Dfyn = Number(ethers.utils.formatUnits(dfynReserves[1], token1Decimals))
-        priceDfyn = reserve1Dfyn / reserve0Dfyn
+        if (reserve0Dfyn > 1000 || reserve1Dfyn > 1000) {
+          priceDfyn = reserve1Dfyn / reserve0Dfyn
+        }
       }
       
       // FIND LOWEST AND HIGHEST PRICES
@@ -117,12 +130,16 @@ export const bot = async (tokenA, tokenB) => {
       console.log('PROFITABLE?                   =>', shouldTrade)
 
       // EXECUTE TRANSACTION
-      const amountToBuy = 5 * (token0Decimals * 10)
+      const amountToBuy = 1 * (token0Decimals * 10)
       executeTrade(
         token0, // always in order
         token1, // always in order
-        amountToBuy, 
-        0, // since we always divide token0 / token1 to get price, we're always buying token0
+        amountToBuy,
+        // since we always divide token1 / token0 to get price, we're always
+        // buying token0 (example: token0 is 2300 DAI in pool, token1 is 1 ETH
+        // in pool, giving us 2300 / 1, meaning 2300 is the price of ETH in DAI,
+        // so we want to buy ETH wherever it's cheapest).
+        0,
         exchange0, // buying from here
         exchange1 // selling to here
       )

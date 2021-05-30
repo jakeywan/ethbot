@@ -92,4 +92,25 @@ https://finematics.com/how-to-code-a-flash-loan-with-aave/
 
 --------------------------------
 
-Out contract on Matic mainnet: 0xCFf7b8db1b8232ac343B517aF890f2DEf4E541F7
+errors:
+execution reverted: ERC20: transfer amount exceeds balance -> not sure why
+execution reverted: PolyZap: INSUFFICIENT_INPUT_AMOUNT (i think this happens
+when the second txn fails and we don't have enough to pay polyzap back. OR it's
+from not being able to withdraw from Polyzap? the polyzap pool is tiny here too)
+execution reverted: UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT
+
+we've been wrong. let's say a pool has 2300 DAI and 1 ETH in it (about right for
+DAI-ETH pair). if we divide token0 (DAI) by token1 (ETH), we'd get 2300, which is
+the price of ETH (the denominator). The denominator, or token1, is the one we're
+always buying first. 
+
+ UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT
+ ^ this is returned from `swap` method on `pair` contract, and means both amounts
+ submitted are zero. see here: https://github.com/QuickSwap/quickswap-core/blob/c127fa77b9525ecabf586b86361d2ada93058868/contracts/UniswapV2Pair.sol#L160
+
+UniswapV2: INSUFFICIENT_INPUT_AMOUNT
+^ this also returned from `swap` on `pair` contract, but means the input amounts
+are both zero. see here: https://github.com/sushiswap/sushiswap/blob/414f55587c25b4a761f402d29995aded08806da2/contracts/uniswapv2/UniswapV2Pair.sol#L189. by the time we've reached this, we've already done the optimistic transfer, so our contract should have the tokens. 
+
+UniswapV2: INSUFFICIENT_LIQUIDITY
+^ Interestingly, the contract only returns insufficient liquidity warning if BOTH `amount0Out` and `amount0Out` are bigger than reserves. We'll never encounter this, because we're always withdrawing 0 of one token: https://github.com/sushiswap/sushiswap/blob/414f55587c25b4a761f402d29995aded08806da2/contracts/uniswapv2/UniswapV2Pair.sol#L175
