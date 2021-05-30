@@ -120,7 +120,7 @@ export const bot = async (tokenA, tokenB) => {
       if (!shouldTrade) return
 
       console.log(`--------------${token0Name}-${token1Name}--------------`)
-
+      console.log('BLOCK NUMBER ', blockNumber)
       if (priceSushiswap) console.log('SUSHISWAP PRICE               =>', parseFloat(priceSushiswap.toFixed(9)))
       if (priceQuickSwap) console.log('QUICKSWAP PRICE               =>', parseFloat(priceQuickSwap.toFixed(9)))
       if (pricePolyzap) console.log('POLYZAP PRICE                 =>', parseFloat(pricePolyzap.toFixed(9)))
