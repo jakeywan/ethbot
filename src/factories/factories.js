@@ -1,9 +1,10 @@
 import UniswapV2Factory from '../abis/IUniswapV2Factory.js'
+import EthBot from '../abis/EthBot.js'
 import { ethers } from 'ethers'
 import { wallet } from '../matic/matic.js'
 import dotenv from 'dotenv'
+import IUniswapV2ERC20 from '../abis/IUniswapV2ERC20.js';
 dotenv.config()
-
 
 export const sushiFactory = new ethers.Contract(
   '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
@@ -24,3 +25,12 @@ export const dfynFactory = new ethers.Contract(
   '0xE7Fb3e833eFE5F9c441105EB65Ef8b261266423B',
   UniswapV2Factory.abi, wallet
 )
+
+export const tradeFactory = new ethers.Contract(
+  '0xCFf7b8db1b8232ac343B517aF890f2DEf4E541F7',
+  EthBot, wallet
+)
+
+export const tokenFactory = (tokenAddress) => {
+  return new ethers.Contract(tokenAddress, IUniswapV2ERC20.abi, wallet)
+}

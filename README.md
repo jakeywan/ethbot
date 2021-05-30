@@ -87,3 +87,9 @@ I removed the gas calculations because I'm thinking it's just fractions of penni
 
 # Aave Flash Loans
 https://docs.aave.com/developers/guides/flash-loans
+https://finematics.com/how-to-code-a-flash-loan-with-aave/
+
+
+--------------------------------
+
+Out contract on Matic mainnet: 0xCFf7b8db1b8232ac343B517aF890f2DEf4E541F7
