@@ -19,16 +19,14 @@ export const executeTrade = (
   exchange1
 ) => {
   console.log('Executing trade!')
-  try {
-    tradeFactory.trade(
-      token0Address,
-      token1Address,
-      amount0Out,
-      amount1Out,
-      exchange0,
-      exchange1
-    )
-  } catch (err) {
-    console.log('Error', err)
-  }
+  tradeFactory.trade(
+    token0Address,
+    token1Address,
+    amount0Out,
+    amount1Out,
+    exchange0,
+    exchange1
+  ).catch(err => {
+    console.log('EXECUTION ERROR-------', err.error.message)
+  })
 }

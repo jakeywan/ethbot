@@ -7,6 +7,11 @@ import { ETH_TRADE } from '../constants/tradeAmountDefaults.js'
 import { loadPair } from '../pairs/pairs.js'
 import { executeTrade } from '../executeTrade.js'
 
+const sushiFee = .25
+const polyzapFee = .25
+const quickswapFee = .3
+const dfynFee = .3
+
 export const bot = async (tokenA, tokenB) => {
 
   let sushiPair
@@ -100,22 +105,50 @@ export const bot = async (tokenA, tokenB) => {
       // Note which exchanges have the highest and lowest prices, using their codes
       let exchange0 // lowest price
       let exchange1 // highest price
-      if (priceSushiswap === min) exchange0 = 0
-      if (priceSushiswap === max) exchange1 = 0
-      if (priceQuickSwap === min) exchange0 = 1
-      if (priceQuickSwap === max) exchange1 = 1
-      if (pricePolyzap === min) exchange0 = 2
-      if (pricePolyzap === max) exchange1 = 2
-      if (priceDfyn === min) exchange0 = 3
-      if (priceDfyn === max) exchange1 = 3
+      let fee0 // fee of exchange0
+      let fee1 // fee of exchange1
+      if (priceSushiswap === min) {
+        exchange0 = 0
+        fee0 = sushiFee
+      }
+      if (priceSushiswap === max) {
+        exchange1 = 0
+        fee1 = sushiFee
+      }
+      if (priceQuickSwap === min) {
+        exchange0 = 1
+        fee0 = quickswapFee
+      }
+      if (priceQuickSwap === max) {
+        exchange1 = 1
+        fee1 = quickswapFee
+      }
+      if (pricePolyzap === min) {
+        exchange0 = 2
+        fee0 = polyzapFee
+      }
+      if (pricePolyzap === max) {
+        exchange1 = 2
+        fee1 = polyzapFee
+      }
+      if (priceDfyn === min) {
+        exchange0 = 3
+        fee0 = dfynFee
+      }
+      if (priceDfyn === max) {
+        exchange1 = 3
+        fee1 = dfynFee
+      }
 
       // DETERMINE IF WE SHOULD TRADE
       // Get the basic spread (without fees yet)
       let percentageSpread = (max / min - 1) * 100
       // Subtract fees (assume .3% each swap)
-      const percentageSpreadAfterFees = percentageSpread - 0.6
+      const percentageSpreadAfterFees = percentageSpread - fee0 - fee1
       // Only attempt a trade if we're still above 0
-      const shouldTrade = percentageSpreadAfterFees > 0.02
+      const shouldTrade = percentageSpreadAfterFees > 0.05
+      // TODO: we should also calculate price impact give the reserves, and make
+      // sure to only trade an exact amount which still keeps us in the black
 
       if (!shouldTrade) return
 
@@ -130,8 +163,8 @@ export const bot = async (tokenA, tokenB) => {
       console.log('PROFITABLE?                   =>', shouldTrade)
 
       // EXECUTE TRANSACTION
-      const amountToBuy = String(ethers.utils.parseUnits('1', token0Decimals))
-      
+      const amountToBuy = String(ethers.utils.parseUnits('.25', token0Decimals))
+
       executeTrade(
         token0, // always in order
         token1, // always in order
@@ -144,8 +177,9 @@ export const bot = async (tokenA, tokenB) => {
         exchange0, // buying from here
         exchange1 // selling to here
       )
+      
     } catch (err) {
-      console.log('ERROR', err)
+      console.log('ERROR', err.error.message.error)
     }
 
   })

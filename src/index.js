@@ -9,7 +9,8 @@ import {
   daiAddress,
   maticAddress,
   btcAddress,
-  aaveAddress
+  aaveAddress,
+  krillAddress
 } from './constants/tokenAddresses.js'
 import { loader } from './utilities/loader.js'
 import { bot } from './bots/bot.js'
@@ -45,5 +46,8 @@ bot(maticAddress, usdcAddress)
 bot(wethAddress, daiAddress)
 // MATIC-BTC
 bot(maticAddress, btcAddress)
+// USDC-KRILL
+bot(usdcAddress, krillAddress)
+
 
 loader()

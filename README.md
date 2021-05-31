@@ -114,3 +114,28 @@ are both zero. see here: https://github.com/sushiswap/sushiswap/blob/414f55587c2
 
 UniswapV2: INSUFFICIENT_LIQUIDITY
 ^ Interestingly, the contract only returns insufficient liquidity warning if BOTH `amount0Out` and `amount0Out` are bigger than reserves. We'll never encounter this, because we're always withdrawing 0 of one token: https://github.com/sushiswap/sushiswap/blob/414f55587c25b4a761f402d29995aded08806da2/contracts/uniswapv2/UniswapV2Pair.sol#L175
+
+
+NOPE, this is the source of the error I'm getting from Polyzap: https://github.com/Uniswap/uniswap-v2-periphery/blob/dda62473e2da448bc9cb8f4514dadda4aeede5f4/contracts/UniswapV2Router02.sol#L232
+
+I see it's not an issue with liquidity, there would be a diff error for that:
+https://github.com/Uniswap/uniswap-v2-periphery/blob/dda62473e2da448bc9cb8f4514dadda4aeede5f4/contracts/libraries/UniswapV2Library.sol#L62
+
+execution reverted: ERC20: transfer amount exceeds balance => i got this when
+i tried to borrow too big an amount from the pool (e.g. the pool existed, but
+i was borrowing 3.33% of pool). this happened trying to take 100 Matic from a pool that
+had about 3,000 matic.
+
+
+--------------------
+
+## Price impact
+I think that's what causing these to fail. If you calculate price impact using
+the sushi swap interface, you can't actually take very much of a pool before causing
+a greater price impact than the typical fee spread we would capture (for example,
+swapping 1 matic in a fairly small matic-aave pool on sushi causes a .02% price
+impact. Sometimes that's greater than our fee spread.)
+
+see these resources:
+* https://dailydefi.org/articles/price-impact-and-how-to-calculate/
+* https://ethereum.stackexchange.com/questions/90066/how-does-uniswap-calculate-price-impact-without-fee-on-the-swap-page
