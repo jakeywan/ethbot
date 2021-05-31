@@ -10,6 +10,7 @@
     "clean": "rm -rf build && mkdir build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=development nodemon src/index.js --exec babel-node",
+    "start-local-prod": "NODE_ENV=production nodemon src/index.js --exec babel-node",
     "build": "npm run clean && babel src -d build",
     "start-staging": "NODE_ENV=staging node index.js",
     "start-production": "NODE_ENV=production node build/index.js",
