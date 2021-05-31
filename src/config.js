@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'production') {
 } else if (process.env.NODE_ENV === 'development') {
   // local variables
   nodeUrl = 'http://127.0.0.1:8545/'
-  contractAddress = '0xa3307bf348acc4beddd67cca2f7f0c4349d347db'
+  contractAddress = '0xf5C3953Ae4639806fcbCC3196f71dd81B0da4348'
 }
 
 console.log('Node URL: ', nodeUrl)

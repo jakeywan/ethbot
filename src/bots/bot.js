@@ -130,7 +130,8 @@ export const bot = async (tokenA, tokenB) => {
       console.log('PROFITABLE?                   =>', shouldTrade)
 
       // EXECUTE TRANSACTION
-      const amountToBuy = 1 * (token0Decimals * 10)
+      const amountToBuy = String(ethers.utils.parseUnits('1', token0Decimals))
+      
       executeTrade(
         token0, // always in order
         token1, // always in order
