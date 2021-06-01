@@ -10,7 +10,8 @@ import {
   maticAddress,
   btcAddress,
   aaveAddress,
-  krillAddress
+  krillAddress,
+  chainlinkAddress
 } from './constants/tokenAddresses.js'
 import { loader } from './utilities/loader.js'
 import { bot } from './bots/bot.js'
@@ -48,6 +49,7 @@ bot(wethAddress, daiAddress)
 bot(maticAddress, btcAddress)
 // USDC-KRILL
 bot(usdcAddress, krillAddress)
-
+// LINK-ETH
+bot(chainlinkAddress, wethAddress)
 
 loader()

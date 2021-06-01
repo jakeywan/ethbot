@@ -58,7 +58,7 @@ export const bot = async (tokenA, tokenB) => {
         const sushiReserves = await sushiPair.getReserves()
         const reserve0Sushi = Number(ethers.utils.formatUnits(sushiReserves[0], token0Decimals))
         const reserve1Sushi = Number(ethers.utils.formatUnits(sushiReserves[1], token1Decimals))
-        if (reserve0Sushi > 1000 || reserve1Sushi > 1000) {
+        if (reserve0Sushi > 3000 || reserve1Sushi > 3000) {
           // We must ALWAYS calculate price in this direction, so we can assume
           // that reserve0/token0/amount0In is always the starting direction.
           priceSushiswap = reserve1Sushi / reserve0Sushi
@@ -69,16 +69,16 @@ export const bot = async (tokenA, tokenB) => {
         const quickSwapReserves = await quickSwapPair.getReserves()
         const reserve0QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[0], token0Decimals))
         const reserve1QuickSwap = Number(ethers.utils.formatUnits(quickSwapReserves[1], token1Decimals))
-        if (reserve0QuickSwap > 1000 || reserve1QuickSwap > 1000) {
+        if (reserve0QuickSwap > 3000 || reserve1QuickSwap > 3000) {
           priceQuickSwap = reserve1QuickSwap / reserve0QuickSwap
         }
       }
-      if (quickSwapPair.address !== nullAddress) {
+      if (polyzapPair.address !== nullAddress) {
         // POLYZAP
         const polyzapReserves = await polyzapPair.getReserves()
         const reserve0Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[0], token0Decimals))
         const reserve1Polyzap = Number(ethers.utils.formatUnits(polyzapReserves[1], token1Decimals))
-        if (reserve0Polyzap > 1000 || reserve1Polyzap > 1000) {
+        if (reserve0Polyzap > 3000 || reserve1Polyzap > 3000) {
           pricePolyzap = reserve1Polyzap / reserve0Polyzap
         }
       }
@@ -87,7 +87,7 @@ export const bot = async (tokenA, tokenB) => {
         const dfynReserves = await dfynPair.getReserves()
         const reserve0Dfyn = Number(ethers.utils.formatUnits(dfynReserves[0], token0Decimals))
         const reserve1Dfyn = Number(ethers.utils.formatUnits(dfynReserves[1], token1Decimals))
-        if (reserve0Dfyn > 1000 || reserve1Dfyn > 1000) {
+        if (reserve0Dfyn > 3000 || reserve1Dfyn > 3000) {
           priceDfyn = reserve1Dfyn / reserve0Dfyn
         }
       }
@@ -163,7 +163,7 @@ export const bot = async (tokenA, tokenB) => {
       console.log('PROFITABLE?                   =>', shouldTrade)
 
       // EXECUTE TRANSACTION
-      const amountToBuy = String(ethers.utils.parseUnits('.25', token0Decimals))
+      const amountToBuy = String(ethers.utils.parseUnits('3', token0Decimals))
 
       executeTrade(
         token0, // always in order
