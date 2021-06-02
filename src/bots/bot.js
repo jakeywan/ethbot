@@ -6,6 +6,7 @@ import { tokenFactory } from '../factories/factories.js'
 import { ETH_TRADE } from '../constants/tradeAmountDefaults.js'
 import { loadPair } from '../pairs/pairs.js'
 import { executeTrade } from '../executeTrade.js'
+import { sushiPairUrl, quickSwapPairUrl, dfynPairUrl } from '../constants/pairUrls.js'
 
 const sushiFee = .25
 const polyzapFee = .25
@@ -42,7 +43,7 @@ export const bot = async (tokenA, tokenB) => {
 
   provider.on('block', async (blockNumber) => {
     try {
-
+      
       let nullAddress = '0x0000000000000000000000000000000000000000'
       let priceSushiswap
       let priceQuickSwap
@@ -154,16 +155,28 @@ export const bot = async (tokenA, tokenB) => {
 
       console.log(`--------------${token0Name}-${token1Name}--------------`)
       console.log('BLOCK NUMBER ', blockNumber)
-      if (priceSushiswap) console.log('SUSHISWAP PRICE               =>', parseFloat(priceSushiswap.toFixed(9)))
-      if (priceQuickSwap) console.log('QUICKSWAP PRICE               =>', parseFloat(priceQuickSwap.toFixed(9)))
-      if (pricePolyzap) console.log('POLYZAP PRICE                 =>', parseFloat(pricePolyzap.toFixed(9)))
-      if (priceDfyn) console.log('DFYN PRICE                    =>', parseFloat(priceDfyn.toFixed(9)))
+      if (priceSushiswap) {
+        console.log('SUSHISWAP PRICE               =>', parseFloat(priceSushiswap.toFixed(9)))
+        console.log('SUSHI PAIR URL: ', sushiPairUrl + sushiPair.address)
+      }
+      if (priceQuickSwap) {
+        console.log('QUICKSWAP PRICE               =>', parseFloat(priceQuickSwap.toFixed(9)))
+        console.log('QUICKSWAP PAIR URL: ', quickSwapPairUrl + quickSwapPair.address)
+      }
+      if (pricePolyzap) {
+        console.log('POLYZAP PRICE                 =>', parseFloat(pricePolyzap.toFixed(9)))
+        console.log('POLYZAP PAIR URL: ', polyzapPairUrl + polyzapPair.address)
+      }
+      if (priceDfyn) {
+        console.log('DFYN PRICE                    =>', parseFloat(priceDfyn.toFixed(9)))
+        console.log('DFYN PAIR URL: ', dfynPairUrl + dfynPairUrl.address)
+      }
       console.log('LARGEST PERCENTAGE SPREAD     =>', percentageSpread.toFixed(3) + ' %')
       console.log('LARGEST SPREAD AFTER FEES     =>', percentageSpreadAfterFees.toFixed(3) + ' %')
       console.log('PROFITABLE?                   =>', shouldTrade)
 
       // EXECUTE TRANSACTION
-      const amountToBuy = String(ethers.utils.parseUnits('3', token0Decimals))
+      const amountToBuy = String(ethers.utils.parseUnits('1', token0Decimals))
 
       executeTrade(
         token0, // always in order
